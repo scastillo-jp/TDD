@@ -1,22 +1,17 @@
+import { logging } from 'protractor';
 import { User } from './../models/user.interface';
-import { TestBed, getTestBed } from '@angular/core/testing';
+import { getTestBed, TestBed } from '@angular/core/testing';
 
 import { UserService } from './user.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('UserService', () => {
   let service: UserService;
-
-  // Se puede usar para iyectar servicios
+  //inject service
   let injector: TestBed;
-
-  //simular solicitudes
+  //simulate request
   let httpMock: HttpTestingController;
-
-  afterEach(() => {
-    // después de cada if verificamos haya solicitures pendientes.
-    httpMock.verify();
-  });
+  let component: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,22 +20,25 @@ describe('UserService', () => {
       ]
     });
 
-    // tener acceso a las variables limpias antes de cada it
+    //have acces to clean variables
     injector = getTestBed();
     httpMock = injector.get(HttpTestingController);
     service = TestBed.inject(UserService);
+  });
+
+  // after each request check the pending requests
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  fit('get users', () => {
-    // instanciar servicio
+  it('should return an Observable<User[]>', () => {
     const service: UserService = TestBed.get(UserService);
-
-    // mock objeto simulado de nuestra respuesta
-    let mockUser: User[] = [
+    //mock: Object simlated
+    const mockUser: User[] = [
       {
         login: "mojombo",
         id: 1,
@@ -81,19 +79,22 @@ describe('UserService', () => {
         type: "User",
         site_admin: false
       },
-    ];
-    // ejecutamos getAll() para suscribirnos
+    ]
+
+    // executing getAll() to subscribe us
     service.getAll().subscribe((users) => {
+      //expect have two user
       expect(users.length).toBe(2);
+      // expect usert to equal mockUser
       expect(users).toEqual(mockUser);
+      // expect have defined login
       expect(users[0].login).toBeDefined();
     });
 
-   // validar url api
+    //Validate url API
     const req = httpMock.expectOne('https://api.github.com/users');
-    // validar GET
+    //Validate GET
     expect(req.request.method).toBe('GET');
-    //proporcionar valors ficticios como respuesta de nuestras peticiones.
     req.flush(mockUser);
   });
 });
