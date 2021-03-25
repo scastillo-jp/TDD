@@ -127,7 +127,7 @@ describe('AppComponent', () => {
       return of(mockUser);
     });
 
-    // appComponent.ngOnInit();
-    // expect(users).toHaveBeenCalled();
+    appComponent.ngOnInit();
+    expect(users).toHaveBeenCalled();
   });
 });

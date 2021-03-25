@@ -13,7 +13,7 @@ export class AppComponent {
   status: boolean = true;
   users: User[] = [];
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {  this.getUsers() }
 
   isNumber(value: any) {
     return typeof value === 'number' ? true : false;
@@ -24,6 +24,7 @@ export class AppComponent {
     const validUrl = regex.test(url);
     return validUrl;
   }
+
   getUsers(){
     this.userService.getAll().subscribe( users => {
       this.users = users
