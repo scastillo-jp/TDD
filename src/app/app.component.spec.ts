@@ -1,10 +1,14 @@
+import { User } from './models/user.interface';
+import { UserService } from './services/user.service';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { of } from 'rxjs';
 
 describe('AppComponent', () => {
 
   let appComponent: any;
+  let service: any;
   //beforeAll
   beforeAll(() => {
     console.log('beforeAll');
@@ -13,15 +17,20 @@ describe('AppComponent', () => {
   //beforeEach
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
       declarations: [
         AppComponent
       ],
+      providers:[
+        UserService,
+        AppComponent
+      ],
+      imports:[
+        HttpClientTestingModule
+       ]
     }).compileComponents();
 
-    appComponent = new AppComponent();
+    appComponent = TestBed.inject(AppComponent);
+    service = TestBed.inject(UserService);
     console.log('beforeEach')
   });
 
@@ -62,12 +71,63 @@ describe('AppComponent', () => {
   });
 
   [
-    {url: 'http://hola.com', },
-    {url: 'https://hola.com'}
+    { url: 'http://hola.com', },
+    { url: 'https://hola.com' }
   ].map((value) => {
     it('if the url have http or https should be return  true', () => {
       const url = appComponent.validUrl(value.url);
       expect(url).toBeTruthy();
     })
-  })
+  });
+
+  xit('all service: userService and getAll() to get all users', () => {
+    const mockUser: User[] = [
+      {
+        login: "mojombo",
+        id: 1,
+        node_id: "MDQ6VXNlcjE=",
+        avatar_url: "https://avatars.githubusercontent.com/u/1?v=4",
+        gravatar_id: "",
+        url: "https://api.github.com/users/mojombo",
+        html_url: "https://github.com/mojombo",
+        followers_url: "https://api.github.com/users/mojombo/followers",
+        following_url: "https://api.github.com/users/mojombo/following{/other_user}",
+        gists_url: "https://api.github.com/users/mojombo/gists{/gist_id}",
+        starred_url: "https://api.github.com/users/mojombo/starred{/owner}{/repo}",
+        subscriptions_url: "https://api.github.com/users/mojombo/subscriptions",
+        organizations_url: "https://api.github.com/users/mojombo/orgs",
+        repos_url: "https://api.github.com/users/mojombo/repos",
+        events_url: "https://api.github.com/users/mojombo/events{/privacy}",
+        received_events_url: "https://api.github.com/users/mojombo/received_events",
+        type: "User",
+        site_admin: false
+      },
+      {
+        login: "defunkt",
+        id: 2,
+        node_id: "MDQ6VXNlcjI=",
+        avatar_url: "https://avatars.githubusercontent.com/u/2?v=4",
+        gravatar_id: "",
+        url: "https://api.github.com/users/defunkt",
+        html_url: "https://github.com/defunkt",
+        followers_url: "https://api.github.com/users/defunkt/followers",
+        following_url: "https://api.github.com/users/defunkt/following{/other_user}",
+        gists_url: "https://api.github.com/users/defunkt/gists{/gist_id}",
+        starred_url: "https://api.github.com/users/defunkt/starred{/owner}{/repo}",
+        subscriptions_url: "https://api.github.com/users/defunkt/subscriptions",
+        organizations_url: "https://api.github.com/users/defunkt/orgs",
+        repos_url: "https://api.github.com/users/defunkt/repos",
+        events_url: "https://api.github.com/users/defunkt/events{/privacy}",
+        received_events_url: "https://api.github.com/users/defunkt/received_events",
+        type: "User",
+        site_admin: false
+      },
+    ]
+    const users = spyOn(service, 'getAll').and.callFake( () => {
+      return of(mockUser);
+    });
+
+    // appComponent.ngOnInit();
+    // expect(users).toHaveBeenCalled();
+  });
 });
