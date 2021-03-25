@@ -80,7 +80,7 @@ describe('AppComponent', () => {
     })
   });
 
-  xit('all service: userService and getAll() to get all users', () => {
+  it('all service: userService and getAll() to get all users', () => {
     const mockUser: User[] = [
       {
         login: "mojombo",
